@@ -1,0 +1,4 @@
+#+title: woo-eee!
+
+I am a project that consumes ~settings~, ~ but get this: *I HAVE MY OWN SETTINGS TOO*.
+and get /this/!!! i need to touch some of the _same files_ as ~settings~ too.
