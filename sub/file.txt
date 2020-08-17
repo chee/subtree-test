@@ -15,3 +15,23 @@ thanks
 hope this text file finds you well
 
 -- file.txt
+
+Hello, I am an ordinary text file.
+
+I have several lines.
+
+**This line has changed.**
+
+This one will not change.
+
+This one will be changed by both of us.
+
+This one will not change.
+
+WOW! BET YOU DIDN’T EXPECT THIS LINE 🙉🙉🙉
+
+thanks
+
+hope this text file finds you well
+
+-- file.txt
