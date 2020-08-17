@@ -1,0 +1,5 @@
+#+title: Settings
+
+welcome! welcome my friends to *Settings*. let me tell you about what we do here, it’s pretty neat.
+
+there’s a folder in here called =file:sub=, and that folder contains some files. it’s got a text files, and a yaml file.
