@@ -2,3 +2,11 @@
 
 I am a project that consumes ~settings~, ~ but get this: *I HAVE MY OWN SETTINGS TOO*.
 and get /this/!!! i need to touch some of the _same files_ as ~settings~ too.
+
+first, i’ll bring settings into here as a submodule
+
+#+begin_src shell
+git subtree add -P settings ../settings
+#+end_src
+
+#+RESULTS:
