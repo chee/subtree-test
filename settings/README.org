@@ -1,0 +1,43 @@
+#+title: Settings
+
+welcome! welcome my friends to *Settings*. let me tell you about what we do here, it’s pretty neat.
+
+there’s a folder in here called =file:sub=, and that folder contains some files. it’s got a text files, and a yaml file:
+
+** the text file
+
+#+begin_src text :tangle ./sub/file.txt
+  Hello, I am an ordinary text file.
+
+  I have several lines.
+
+  This one will change.
+
+  This one will not change.
+
+  This one will be changed by both of us.
+
+  This one will not change.
+
+  thanks
+
+  hope this text file finds you well
+
+  -- file.txt
+#+end_src
+
+** the yaml file
+
+#+begin_src yaml :tangle ./sub/file.yml
+  file:
+    name: "file.yml"
+    contents: "file:\n  name: file.yml\n  contents: 🔂"
+    mod: 0o644
+    uid: 1000
+    gid: 1000
+    parent:
+      name: sub
+      mod: 0o755
+      uid: 1000
+      gid: 1000
+#+end_src
