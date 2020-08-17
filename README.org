@@ -1,0 +1,448 @@
+#+title: subtree-test
+
+there are two directories, file:consumer and file:settings.
+
+* Settings
+=settings= contains some files that are used by =consumer=.
+
+
+** README
+#+begin_src org :mkdirp yes :tangle settings/README.org
+#+title: Settings
+
+welcome! welcome my friends to *Settings*. let me tell you about what we do here, it’s pretty neat.
+
+there’s a folder in here called =file:sub=, and that folder contains some files. it’s got a text files, and a yaml file.
+#+end_src
+
+** git init
+#+begin_src shell :results none
+  cd settings
+  git init
+#+end_src
+
+* Consumer
+=consumer= consumes =settings= via ~git subtree~.
+
+
+** README
+#+begin_src org :comments both :mkdirp yes :tangle consumer/README.org
+#+title: woo-eee!
+
+I am a project that consumes ~settings~, ~ but get this: *I HAVE MY OWN SETTINGS TOO*.
+and get /this/!!! i need to touch some of the _same files_ as ~settings~ too.
+#+end_src
+
+** git init
+#+begin_src shell :results none
+  cd consume
+  git init
+#+end_src
+
+* create files
+
+First, we’ll add a couple of files to =settings= and =consumer=.
+
+** the text file
+
+#+begin_src text :tangle ./settings/sub/file.txt
+  Hello, I am an ordinary text file.
+
+  I have several lines.
+
+  This one will change.
+
+  This one will not change.
+
+  This one will be changed by both of us.
+
+  This one will not change.
+
+  thanks
+
+  hope this text file finds you well
+
+  -- file.txt
+#+end_src
+
+** the yaml file
+
+#+begin_src yaml :tangle ./settings/sub/file.yml
+    file:
+      name: "file.yml"
+      contents: "file:\n  name: file.yml\n  contents: 🔂"
+      mod: 0o644
+      uid: 1000
+      gid: 1000
+      parent:
+        name: sub
+        mod: 0o755
+        uid: 1000
+        gid: 1000
+#+end_src
+
+** commit them
+
+#+begin_src shell :results output
+  cd settings
+  git add .
+  git commit -m $'add two files'
+#+end_src
+
+* subtree add
+
+now we add =settings= as a ~subtree~ of =consumer=.
+
+(~default~ is the name of the default branch)
+
+#+begin_src shell :results output
+  cd consumer
+  git subtree add -P settings ../settings default
+#+end_src
+
+#+RESULTS:
+: git fetch ../settings default
+
+* status report
+
+okay, so let’s see what we have now
+
+#+begin_src shell :results output
+  cd consumer
+  git status
+#+end_src
+
+#+RESULTS:
+: On branch default
+: nothing to commit, working tree clean
+
+#+begin_src shell :results output
+  cd consumer
+  ls
+#+end_src
+
+#+RESULTS:
+: README.org
+: settings
+
+#+begin_src shell :results output
+  cd consumer
+  ls settings
+#+end_src
+
+#+RESULTS:
+: README.org
+: sub
+
+#+begin_src shell :results output
+  cd consumer
+  cat settings/sub/file.yml
+#+end_src
+
+#+RESULTS:
+#+begin_example
+file:
+  name: "file.yml"
+  contents: "file:\n  name: file.yml\n  contents: 🔂"
+  mod: 0o644
+  uid: 1000
+  gid: 1000
+  parent:
+    name: sub
+    mod: 0o755
+    uid: 1000
+    gid: 1000
+#+end_example
+
+* making a changes
+
+ok ! that looks right, now let’s make a change
+
+#+begin_src shell :results none
+  cat > consumer/settings/sub/file.txt <<HERE
+  Hello, I am an ordinary text file.
+
+  I have several lines.
+
+  ,**This line has changed.**
+
+  This one will not change.
+
+  This one will be changed by both of us.
+
+  This one will not change.
+
+  thanks
+
+  hope this text file finds you well
+
+  -- file.txt
+  HERE
+#+end_src
+
+ok, so i changed one line.
+
+#+begin_src shell :results output
+  cd consumer
+  git status
+#+end_src
+
+#+RESULTS:
+: On branch default
+: Changes not staged for commit:
+:   (use "git add <file>..." to update what will be committed)
+:   (use "git restore <file>..." to discard changes in working directory)
+:       modified:   README.org
+:       modified:   settings/sub/file.txt
+:
+: no changes added to commit (use "git add" and/or "git commit -a")
+:	modified:   README.org
+:
+: no changes added to commit (use "git add" and/or "git commit -a")
+
+#+begin_src shell :results output
+  cd consumer
+  git add settings
+  git commit -m "change a line"
+#+end_src
+
+#+RESULTS:
+: [default a860f78] change a line
+:  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* no updates
+let’s check if there are any updates from =settings= (there aren’t)
+
+#+begin_src shell :results output
+  cd consumer
+  git subtree pull -P settings ../settings default
+#+end_src
+
+#+RESULTS:
+Working tree has modifications.  Cannot add.
+
+lol, ok.
+#+begin_src shell :results output
+  cd consumer
+  git add .
+  git commit -m $'everything lol'
+  git subtree pull -P settings ../settings default
+#+end_src
+
+#+RESULTS:
+: [default 249b9e8] everything lol
+:  1 file changed, 4 insertions(+), 100 deletions(-)
+:  rewrite README.org (90%)
+: Already up to date.
+
+ok! already up to date!
+
+now let’s make a change in settings itself!
+
+#+begin_src shell :results none
+  cat > settings/sub/file.txt <<HERE
+  Hello, I am an ordinary text file.
+
+  I have several lines.
+
+  ,**This line has changed.**
+
+  This one will not change.
+
+  This one will be changed by both of us.
+
+  This one will not change.
+
+  WOW! BET YOU DIDN’T EXPECT THIS LINE 🙉🙉🙉
+
+  thanks
+
+  hope this text file finds you well
+
+  -- file.txt
+  HERE
+#+end_src
+
+#+begin_src shell :results output
+  cd settings
+  git status
+#+end_src
+
+#+RESULTS:
+: On branch default
+: Changes not staged for commit:
+:   (use "git add <file>..." to update what will be committed)
+:   (use "git restore <file>..." to discard changes in working directory)
+:       modified:   sub/file.txt
+:
+: no changes added to commit (use "git add" and/or "git commit -a")
+
+#+begin_src shell :results output
+  cd settings
+  git add .
+  git commit -m "update text file"
+#+end_src
+
+#+RESULTS:
+: [default bea11dd] update text file
+:  1 file changed, 1 insertions(+), 1 deletions(-)
+
+* update in consumer
+
+#+begin_src shell :results output
+  cd consumer
+  git subtree pull -P settings ../settings default
+#+end_src
+
+#+RESULTS:
+: Auto-merging settings/sub/file.txt
+: Merge made by the 'recursive' strategy.
+:  settings/sub/file.txt | 2 +-
+:  1 files changed, 1 insertions(+), 1 deletions(-)
+
+#+begin_src shell :results output
+  cd consumer
+  cat settings/sub/file.txt
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Hello, I am an ordinary text file.
+
+I have several lines.
+
+,**This line has changed.**
+
+This one will not change.
+
+This one will be changed by both of us.
+
+This one will not change.
+
+WOW! BET YOU DIDN’T EXPECT THIS LINE 🙉🙉🙉
+
+thanks
+
+hope this text file finds you well
+
+-- file.txt
+#+end_example
+
+* conflict
+
+now let’s see what happens when we */_both_/* change a line
+
+#+begin_src shell :results none
+  cat > consumer/settings/sub/file.txt <<HERE
+  Hello, I am an ordinary text file.
+
+  I have several lines.
+
+  ,**This line has changed.**
+
+  This one will not change.
+
+  !!!CONSUMER ALERT!!! i changed the line
+
+  This one will not change.
+
+  WOW! BET YOU DIDN’T EXPECT THIS LINE 🙉🙉🙉
+
+  thanks
+
+  hope this text file finds you well
+
+  -- file.txt
+  HERE
+#+end_src
+
+#+begin_src shell :results none
+  cd consumer
+  git add .
+  git commit -m "change The Line"
+#+end_src
+
+#+begin_src shell :results none
+  cat > settings/sub/file.txt <<HERE
+   Hello, I am an ordinary text file.
+
+   I have several lines.
+
+   ,**This line has changed.**
+
+   This one will not change.
+
+   ACTUALLY I AM THE ONE WHO CHANGED IT
+  [[settings/]]
+   This one will not change.
+
+   WOW! BET YOU DIDN’T EXPECT THIS LINE 🙉🙉🙉
+
+   thanks
+
+   hope this text file finds you well
+
+   -- file.txt
+   HERE
+#+end_src
+
+#+begin_src shell :results none
+  cd settings
+  git add .
+  git commit -m "change The Line, but in settings"
+#+end_src
+
+#+begin_src shell :results none
+  cd consumer
+  git subtree pull -P settings ../settings default
+#+end_src
+
+#+results:
+#+begin_example
+From ../settings
+ * branch            default    -> FETCH_HEAD
+Recorded preimage for 'settings/sub/file.txt'
+#+end_example
+
+that’s right! a regular ol’ merge conflict!
+
+let’s have a look at it
+
+* the diff
+
+#+begin_src shell
+  cd consumer :results output
+  git diff
+#+end_src
+
+#+RESULTS:
+#+begin_example diff
+diff --cc settings/sub/file.txt
+index 1be7cf6,cc48951..0000000
+--- a/settings/sub/file.txt
++++ b/settings/sub/file.txt
+@@@ -6,7 -6,7 +6,11 @@@ I have several lines
+
+  This one will not change.
+
+++<<<<<<< HEAD
+ +!!!CONSUMER ALERT!!! i changed the line
+++=======
++ ACTUALLY I AM THE ONE WHO CHANGED IT
+++>>>>>>> 5bf2df92924f23c31ad7e302cd7b5533110159f9
+
+  This one will not change.
+
+#+end_example
+
+It’s normal! Resolve and commit.
+
+However, this will get old. I think it would be for the best if we made areas available in the files specificly for end user change, like:
+
+#+begin_example
+blah blah blah i am a shared file
+
+===== DO NOT EDIT ABOVE THIS LINE =====
+
+yeahhh i’m doing whatever i want because i’m below the line
+#+end_example
