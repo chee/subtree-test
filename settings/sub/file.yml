@@ -1,0 +1,11 @@
+file:
+  name: "file.yml"
+  contents: "file:\n  name: file.yml\n  contents: 🔂"
+  mod: 0o644
+  uid: 1000
+  gid: 1000
+  parent:
+    name: sub
+    mod: 0o755
+    uid: 1000
+    gid: 1000
