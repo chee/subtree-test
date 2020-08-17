@@ -2,24 +2,6 @@ Hello, I am an ordinary text file.
 
 I have several lines.
 
-This one will change.
-
-This one will not change.
-
-This one will be changed by both of us.
-
-This one will not change.
-
-thanks
-
-hope this text file finds you well
-
--- file.txt
-
-Hello, I am an ordinary text file.
-
-I have several lines.
-
 **This line has changed.**
 
 This one will not change.
